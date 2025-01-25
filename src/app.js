@@ -1,7 +1,6 @@
 import express from "express";
 import { client } from "./utils/db.js";
 import booksRouter from "./apps/books.js";
-import cartRouter from "./apps/cart.js";
 
 async function init() {
   const app = express();
@@ -11,6 +10,8 @@ async function init() {
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
+
+  app.use("/books", booksRouter);
 
   app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);
