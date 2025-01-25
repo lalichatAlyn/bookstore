@@ -5,16 +5,14 @@ import { Router } from "express";
 const cartRouter = Router();
 
 // คำนวน ส่วนลดที่ได้จากการซื้อหนังสือไม่ซ้ำกัน
-function calculateDiscount(uniqueBooksCount, totalPrice) {
+function calculateDiscount(uniqueBooksCount,totalUniquePrice) {
   let discountPercentage = 0;
-
   if (uniqueBooksCount >= 2 && uniqueBooksCount <= 7) {
     discountPercentage = (uniqueBooksCount - 1) * 0.1; 
   } else if (uniqueBooksCount > 7) {
     discountPercentage = 0.6; 
   }
-
-  return totalPrice * discountPercentage; 
+  return totalUniquePrice * discountPercentage
 }
 
 
@@ -28,6 +26,7 @@ cartRouter.post("/", async (req, res) => {
     if (!cart) {
       cart = { user_id, Cartitems: [] };
     }
+    
 
     // เพิ่มของลง ตะกร้า
     for (let product of products) {
@@ -72,15 +71,23 @@ cartRouter.post("/", async (req, res) => {
     const productIds = cart.Cartitems.map((item) => {
       return item.product_id;
     });
-
- 
-
     
     let uniqueBooksCount = productIds.length;
-
-    let discount = calculateDiscount(uniqueBooksCount, totalPrice);
+    let checkUnique = []
+    
+    let totalUniquePrice = cart.Cartitems.reduce((sum, eachItem) => {
+      if (!checkUnique.includes(eachItem.product_id)) {
+        checkUnique.push(eachItem.product_id); 
+        return sum + eachItem.pricePerUnit
+      }
+      return sum; 
+    }, 0);
+    
+    let discount = 0;
+     if (uniqueBooksCount >= 2) {
+        discount = calculateDiscount(uniqueBooksCount,totalUniquePrice);
+     }
     const finalPrice = totalPrice - discount;
-
     cart.totalPrice = totalPrice;
     cart.discount = discount;
     cart.finalPrice = finalPrice;
