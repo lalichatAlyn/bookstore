@@ -9,13 +9,14 @@ function calculateDiscount(uniqueBooksCount, totalPrice) {
   let discountPercentage = 0;
 
   if (uniqueBooksCount >= 2 && uniqueBooksCount <= 7) {
-    discountPercentage = (uniqueBooksCount - 1) * 0.1;
-  } else {
-    discountPercentage = 0.6;
+    discountPercentage = (uniqueBooksCount - 1) * 0.1; 
+  } else if (uniqueBooksCount > 7) {
+    discountPercentage = 0.6; 
   }
 
-  return totalPrice * discountPercentage;
+  return totalPrice * discountPercentage; 
 }
+
 
 cartRouter.post("/", async (req, res) => {
   const user_id = req.body.user_id;
@@ -69,11 +70,10 @@ cartRouter.post("/", async (req, res) => {
 
     //นับหนังสือที่ไม่ซ้ำกัน เพื่อใช้คำนวนส่วนลด
     const productIds = cart.Cartitems.map((item) => {
-      console.log(cart.Cartitems);
       return item.product_id;
     });
 
-    console.log("productIds" , productIds);
+ 
 
     
     let uniqueBooksCount = productIds.length;
