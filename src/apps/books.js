@@ -67,9 +67,7 @@ booksRouter.get("/" , async(req,res) => {
 });
 
 booksRouter.put("/:id" , async(req,res)=>{
-  if (!req.body) {
 
-  }
     try {
     const collection = db.collection("books_inventory");
     const bookId = new ObjectId(req.params.id);
